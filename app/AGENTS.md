@@ -45,5 +45,11 @@ them.
 - Never add real business data, PII, or secrets here. Everything is synthetic
   on purpose.
 
-<!-- Task A adds a "## MCPs" section here, documenting the servers this
-     project expects to have connected and what each is for. -->
+## MCPs
+
+This project connects two public MCP servers to extend Claude's capabilities:
+
+- **filesystem** — read-only access to `app/data/` for catalog file inspection
+- **memory** — in-memory storage for session-scoped data caching and state
+
+Both servers are configured in `.mcp.json` (repo root) and available in Claude Code. The filesystem server scope is deliberately restricted to `app/data` only; see `docs/mcp/servers.md` for security rationale.
