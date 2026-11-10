@@ -1,24 +1,24 @@
 {
   "mcpServers": {
     "filesystem": {
-      "command": "npx",
+      "command": "sh",
       "args": [
-        "-y",
-        "@modelcontextprotocol/server-filesystem",
-        "./app/data"
+        "-c",
+        "cd \"$CLAUDE_PROJECT_DIR\" 2>/dev/null; exec npx -y @modelcontextprotocol/server-filesystem ./app/data"
       ]
     },
     "memory": {
-      "command": "npx",
+      "command": "sh",
       "args": [
-        "-y",
-        "@modelcontextprotocol/server-memory"
+        "-c",
+        "cd \"$CLAUDE_PROJECT_DIR\" 2>/dev/null; export MEMORY_FILE_PATH=\"$PWD/.mcp-memory.jsonl\"; exec npx -y @modelcontextprotocol/server-memory"
       ]
     },
     "catalog": {
-      "command": "node",
+      "command": "sh",
       "args": [
-        "./mcp-server/dist/server.js"
+        "-c",
+        "cd \"$CLAUDE_PROJECT_DIR\" 2>/dev/null; exec node ./mcp-server/dist/server.js"
       ]
     }
   }

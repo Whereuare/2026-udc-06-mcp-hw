@@ -149,33 +149,50 @@ server.registerTool(
   },
 );
 
-// ── Resource ──────────────────────────────────────────────────────────────
-// Catalog overview provided as a read-only tool that returns structured metadata
+// ── Catalog overview (shared by the tool and the resource) ────────────────
+function catalogSummaryText(): string {
+  const catalog = loadCatalog();
+  const cats = categories(catalog);
+  const value = inventoryValue(catalog);
+  return (
+    `Catalog Overview\n` +
+    `================\n\n` +
+    `Total products: ${catalog.length}\n` +
+    `Categories: ${cats.join(", ")}\n` +
+    `Total inventory value: $${value.toFixed(2)}\n`
+  );
+}
+
+// ── Tool 4 ────────────────────────────────────────────────────────────────
 server.registerTool(
   "catalog_summary",
   {
     description:
-      "Get an overview of the catalog including total products, categories, and inventory value.",
+      "Get an overview of the catalog: total products, categories, and total " +
+      "inventory value (sum of price × stock). Use when the user asks about " +
+      "the catalog as a whole or the value of stock on hand.",
     inputSchema: z.object({}),
   },
-  async () => {
-    const catalog = loadCatalog();
-    const cats = categories(catalog);
-    const value = inventoryValue(catalog);
-    return {
-      content: [
-        {
-          type: "text",
-          text:
-            `Catalog Overview\n` +
-            `================\n\n` +
-            `Total products: ${catalog.length}\n` +
-            `Categories: ${cats.join(", ")}\n` +
-            `Total inventory value: $${value.toFixed(2)}\n`,
-        },
-      ],
-    };
+  async () => ({
+    content: [{ type: "text", text: catalogSummaryText() }],
+  }),
+);
+
+// ── Resource ──────────────────────────────────────────────────────────────
+// Same overview, exposed as a read-only resource the host can read by URI
+// (shows up in resources/list, read via resources/read).
+server.registerResource(
+  "catalog-summary",
+  "catalog://summary",
+  {
+    title: "Catalog summary",
+    description:
+      "Read-only overview of the catalog: product count, categories, total inventory value.",
+    mimeType: "text/plain",
   },
+  async (uri) => ({
+    contents: [{ uri: uri.href, mimeType: "text/plain", text: catalogSummaryText() }],
+  }),
 );
 
 // ── Connect ───────────────────────────────────────────────────────────────

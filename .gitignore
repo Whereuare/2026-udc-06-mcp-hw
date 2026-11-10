@@ -40,3 +40,6 @@ nul
 # deliberately scope permissions there.
 .claude/*
 !.claude/settings.json
+
+# Local MCP memory graph (memory server, MEMORY_FILE_PATH in .mcp.json)
+.mcp-memory.jsonl

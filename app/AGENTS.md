@@ -47,9 +47,19 @@ them.
 
 ## MCPs
 
-This project connects two public MCP servers to extend Claude's capabilities:
+`.mcp.json` (repo root) connects three MCP servers — two public, one our own:
 
-- **filesystem** — read-only access to `app/data/` for catalog file inspection
-- **memory** — in-memory storage for session-scoped data caching and state
+- **filesystem** (public, `@modelcontextprotocol/server-filesystem`) — read the
+  catalog files. Configured for `app/data`, but Claude Code's roots widen it to
+  the repo root. Its write tools are denied in `.claude/settings.json`; never
+  use it to modify `data/catalog.json`.
+- **memory** (public, `@modelcontextprotocol/server-memory`) — knowledge-graph
+  notes, persisted in `<repo>/.mcp-memory.jsonl` (gitignored), so they survive
+  across sessions. Delete the file to reset.
+- **catalog** (own, `mcp-server/`) — read-only tools `search_inventory`,
+  `check_stock`, `low_stock`, `catalog_summary` and resource
+  `catalog://summary`, built on this library's exported functions. Prefer it
+  for catalog questions; it needs `npm run build` here first.
 
-Both servers are configured in `.mcp.json` (repo root) and available in Claude Code. The filesystem server scope is deliberately restricted to `app/data` only; see `docs/mcp/servers.md` for security rationale.
+See `docs/mcp/servers.md` for scope rationale and `docs/mcp/SECURITY.md` for
+the threat model.

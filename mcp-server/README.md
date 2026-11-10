@@ -5,12 +5,12 @@
 ```bash
 cp -r docs/templates/mcp-server ./mcp-server
 cd mcp-server && npm install
-cd ../app && npm run build && cd ..   # сервер імпортує app/dist
+cd ../app && npm run build && cd ../mcp-server && npm run build && cd ..   # збирає app/dist і mcp-server/dist
 ```
 
 Розкладка (важлива — не «спрощуйте» її):
 
-```
+```text
 mcp-server/
 ├── src/server.ts   ← пишете тут
 ├── dist/server.js  ← сюди збирається
@@ -39,7 +39,7 @@ mcp-server/
 просто зазначте це в PR.
 
 **Точні сигнатури перевіряйте в документації свого встановленого SDK**
-([ts.sdk.modelcontextprotocol.io](https://ts.sdk.modelcontextprotocol.io/)) —
+([ts.sdk.modelcontextprotocol.io/v2](https://ts.sdk.modelcontextprotocol.io/v2/); корінь сайту — документація v1) —
 API ще рухається, і сліпо скопійований зі статті код цілком може не зібратися.
 Вміння звірити приклад із версією, яка у вас реально стоїть, — частина
 завдання.
@@ -60,6 +60,11 @@ API ще рухається, і сліпо скопійований зі ста�
    ```bash
    npx @modelcontextprotocol/inspector --cli node ./dist/server.js --method tools/list
    ```
+
+   ⚠️ Inspector (2.14.0) вимагає Node `^22.23.4 || ^24.22.1 || >=26.12.1` — строгіше
+   за «Node 22+» самого репо. На старішому Node користуйтеся перевіркою напряму по
+   stdio (`printf … | node ./dist/server.js`, див. `docs/walkthrough.md`).
+
 2. Зареєструйте його в конфізі хоста і переконайтесь, що tools з'явилися.
 3. Якщо хост його не бачить — майже завжди винні **відносні шляхи**: хост
    запускає сервер не з вашого терміналу. Шляхи мають бути абсолютними або
